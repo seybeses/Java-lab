@@ -1,0 +1,81 @@
+body {
+  background-image: url('지진2.png');
+  background-size: cover; 
+  background-position: center; 
+}
+
+h1 {
+  text-align: center;
+  font-size: 6em;
+  color:rgb(242, 233, 228);
+  position: absolute; 
+  top: -60px; 
+  left: 100px; 
+  line-height: 1.25; 
+}
+
+.box { 
+  width: 2000px; 
+  height: 1000px; 
+  background-color: bisque;
+  position: absolute; 
+  top: 30%;
+  bottom: 0%;
+  left: 0%; 
+}
+
+.boxx{
+  position: absolute;
+  top: 300px;
+  right: 450px;
+}
+
+.one-box {
+  width: 200px;
+  height: 200px;
+  color:rgb(201, 173, 167);
+  position: absolute;
+  top: 300px;
+  right: 200px;
+}
+
+.two-box{
+  width: 200px;
+  height: 200px;
+  color:rgb(154, 140, 152);
+  position: absolute;
+  top: 300px;
+  right: 150px;
+}
+
+.three-box{
+  width: 200px;
+  height: 200px;
+  color:rgb(74, 78, 105);
+  position: absolute;
+  top: 300px;
+  right: 100px;
+}
+
+.four-box{
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  color:rgb(34, 34, 59);
+  top: 300px;
+  right: 50px;
+}
+
+#table {
+  width: 80%;
+  position: relative;
+  margin-top: 14%;
+  margin-left: 9%;
+  border-spacing: 50px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.table_year{
+  color: bisque;
+}
