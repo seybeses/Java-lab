@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earthquake detail</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <style>
+    body, html {
+      height: 100%;
+    }
+
+    body {
+      background-image: url('지진.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .box {
+      width: 100%;
+      height: 80vh;
+      background-color: #f0ede9;
+      position: absolute;
+      top: 12.8%;
+      overflow: auto;
+    }
+
+    table {
+        width: 60%;
+        border-collapse: collapse;
+        margin: auto;
+        position: absolute;
+        top: 20%;
+        left: 20%;
+        background-color: rgb(250, 249, 246);
+    }
+    
+    th, td {
+        text-align: center;
+        border: 1px solid black;
+        padding: 8px;
+    }
+
+    th{
+      background-color: #e6ddd3;
+
+    }
+
+    h1{
+      position: absolute;
+      top: 5%;
+      left: 43%;
+      font-weight: bold;
+    }
+
+    #magnitude-filter{
+      position: absolute;
+      top: 13%;
+      left: 70%;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box">
+    <h1>Earthquake Chart</h1>
+    <select id="magnitude-filter">
+      <option value="0">magnitude</option>
+      <option value="6">6 이상</option>
+      <option value="7">7 이상</option>
+      <option value="8">8 이상</option>
+      <option value="9">9 이상</option>
+    </select>
+    <table>
+      <thead>
+        <tr>
+          <th>Place</th>
+          <th>Time</th>
+          <th>Magnitude</th>
+          <th>Detail</th>
+        <tr>
+      </thead>
+      <tbody id="earthquake-table-body">
+        <tr th:each="earthquake : ${earthquakedata}">
+          <td th:text="${earthquake.place}">Unknown</td>
+          <td th:text="${earthquake.time}">Unknown</td>
+          <td th:text="${earthquake.mag}">Unknown</td>
+          <td>
+            <a th:href="${earthquake.url}">link</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <script>
+const magnitudeFilter = document.getElementById('magnitude-filter');
+const earthquakeRows = document.querySelectorAll('#earthquake-table-body tr');
+
+magnitudeFilter.addEventListener('change', function() {
+  const selectedMagnitude = parseFloat(this.value);
+  earthquakeRows.forEach(row => {
+    const magnitude = parseFloat(row.cells[2].textContent);
+    row.style.display = (selectedMagnitude === 0 || magnitude >= selectedMagnitude) ? '' : 'none';
+  });
+});
+  </script>
+</body>
+
+</html>
