@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earthquake</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="date.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+  body{
+    background-image: url("background.jpg");
+  }
+    h1{
+      position: absolute;
+      top: 50px;
+      left: 34%;
+      font-size: 65px;
+    }
+    table {
+        border-collapse: collapse;
+        width: 80%;
+        margin: 0 auto;
+        margin-top: 15%;
+        background-color: aliceblue;
+        
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+    }
+    th{
+      background-color: rgba(221, 233, 236, 0.822);
+    }
+    .table-box{
+        width: 80%;
+        height: 80vh;
+        position: absolute;
+        left: 10%;
+        bottom: 2%;
+        background-color: rgb(231, 231, 231);
+        overflow-y: scroll;
+    }
+    .data{
+        margin-top: -500px;
+    }
+    .filter2{
+        font-weight: bolder;
+        position: absolute;
+        top: 80px;
+        left: 13%;
+    }
+    .magnitude-range{
+      position: relative;
+      top: 30px;
+    }
+    .filter{
+      font-weight: bolder;
+      position: absolute;
+      top: 80px;
+      left: 50%;
+    }
+    .longitude-range{
+      position: relative;
+      top: 30px; 
+    }
+    .search{
+      position: absolute;
+      top: 160px;
+      left: 83%;
+
+    }
+</style>
+</head>
+<body>
+    <h1>Earthquake Information</h1>
+    <div class="table-box">
+        <table>
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>Depth</th>
+                    <th>Mag</th>
+                    <th>Place</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="earthquakeInfo : ${earthquakeInfos}">
+                    <td th:text="${earthquakeInfo.getTime()}"></td>
+                    <td th:text="${earthquakeInfo.getLatitude()}"></td>
+                    <td th:text="${earthquakeInfo.getLongitude()}"></td>
+                    <td th:text="${earthquakeInfo.getDepth()}"></td>
+                    <td th:text="${earthquakeInfo.getMag()}"></td>
+                    <td th:text="${earthquakeInfo.getPlace()}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="filter">
+          <label for="start-date">발생 기간</label>
+          <input type="text" id="start-date" class="flatpickr" placeholder="시작 날짜 선택">
+          <label for="end-date">~</label>
+          <input type="text" id="end-date" class="flatpickr" placeholder="종료 날짜 선택">
+        <div class="magnitude-range">
+          <label for="magnitude-range">규모 범위 </label>
+          <select id="magnitude-range">
+            <option value="0">2 이상</option>
+            <option value="2">4 이상</option>
+            <option value="4">5 이상</option>
+            <option value="6">6 이상</option>
+            <option value="0">7 이상</option>
+            <option value="0">8 이상</option>
+            <option value="0">9 이상</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter2">
+        <div class="latitude-range">
+          <label for="latitude-range">위도 범위 </label>
+          <input type="text" id="latitude-range"> ~
+          <input type="text" id="latitude-range-max" >
+        </div>
+        <div class="longitude-range">
+          <label for="longitude-range">경도 범위</label>
+          <input type="text" id="longitude-range" > ~
+          <input type="text" id="longitude-range-max" >
+        </div>
+      </div>
+      <button onclick="filterData()" class="search">검색하기</button>
+    </div>
+    
+
+
+ 
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+  $( function() {
+    $("#start-date").datepicker({
+      dateFormat: 'yy-mm-dd',
+      onSelect: function(selectedDate) {
+        $("#end-date").datepicker("option", "minDate", selectedDate);
+      }
+    });
+
+    $("#end-date").datepicker({
+      dateFormat: 'yy-mm-dd',
+      onSelect: function(selectedDate) {
+        $("#start-date").datepicker("option", "maxDate", selectedDate);
+      }
+    });
+  });
+
+  function filterData() {
+    var startDate = new Date(document.getElementById("start-date").value);
+    var endDate = new Date(document.getElementById("end-date").value);
+    var magnitudeRange = parseFloat(document.getElementById("magnitude-range").value);
+    var latitudeMin = parseFloat(document.getElementById("latitude-range").value);
+    var latitudeMax = parseFloat(document.getElementById("latitude-range-max").value);
+    var longitudeMin = parseFloat(document.getElementById("longitude-range").value);
+    var longitudeMax = parseFloat(document.getElementById("longitude-range-max").value);
+
+    var rows = document.querySelectorAll("tbody tr");
+    rows.forEach(function(row) {
+      var time = new Date(row.cells[0].innerText);
+      var mag = parseFloat(row.cells[4].innerText);
+      var latitude = parseFloat(row.cells[1].innerText);
+      var longitude = parseFloat(row.cells[2].innerText);
+
+      var isVisible = true;
+
+      if (!isNaN(startDate) && !isNaN(endDate)) {
+        if (time < startDate || time > endDate) {
+          isVisible = false;
+        }
+      }
+
+      if (!isNaN(magnitudeRange)) {
+        if (mag < magnitudeRange) {
+          isVisible = false;
+        }
+      }
+
+      if (!isNaN(latitudeMin) && !isNaN(latitudeMax)) {
+        if (latitude < latitudeMin || latitude > latitudeMax) {
+          isVisible = false;
+        }
+      }
+
+      if (!isNaN(longitudeMin) && !isNaN(longitudeMax)) {
+        if (longitude < longitudeMin || longitude > longitudeMax) {
+          isVisible = false;
+        }
+      }
+
+      if (isVisible) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    });
+  }
+</script>
+</body>
+</html>
